@@ -23,10 +23,7 @@ for yr in years:
 		if (mn == 1):
 			dyvals = np.arange(1,32,1)
 		elif (mn == 2):
-			if (yr == 1980 | yr == 1984 | yr == 1988 | yr == 1992 | yr == 1996 | yr == 2000 | yr == 2004 | yr == 2008 | yr == 2012):
-				dyvals = np.arange(1,30,1)
-			else:
-				dyvals = np.arange(1,29,1)
+			dyvals = np.arange(1,29,1)
 		elif (mn == 3):
 			dyvals = np.arange(1,32,1)
 		elif (mn == 4):
