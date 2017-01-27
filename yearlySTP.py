@@ -14,7 +14,7 @@ from netCDF4 import Dataset
 import scipy.ndimage
 
 data_path = '/home/sburgholzer/RESEARCH/narr/data/monthly/greaterThan1/'
-years = np.arange(1980,2016,1)
+years = np.arange(1980,2017,1)
 months = np.arange(1,13,1)
 count_stp =  np.zeros((277,349))
 for yr in years:
@@ -31,7 +31,7 @@ for yr in years:
 		lats  = fh.variables["lats"][:]
 		count_stp = np.add(count_stp, stp)
 		fh.close()
-	gr = '%s.nc' % (str(yr))
+	gr = '/home/sburgholzer/RESEARCH/narr/data/yearly/greaterthan1/%s.nc' % (str(yr))
 	ncfile = Dataset(gr, mode='w', format='NETCDF4')
 	ncfile.createDimension('latitude',277)
 	ncfile.createDimension('longitude',349)
