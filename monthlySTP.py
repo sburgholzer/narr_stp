@@ -1,7 +1,7 @@
 #File#File:	monthlySTP.py
 #Author: Scott Burgholzer
 #Date: 12/2/2016
-#Modified: 01/26/2016
+#Modified: 02/09/2016
 #Purpose: To calculate the total 3 hourly intervals of STP for each month
 #         and calculate how many times that occured
 
@@ -13,6 +13,26 @@ import numpy.ma as ma
 from mpl_toolkits.basemap import Basemap, cm
 from netCDF4 import Dataset
 import scipy.ndimage
+import shapefile
+from matplotlib.path import Path
+
+# get shapefile information for clipping
+sf = shapefile.Reader('/home/sburgholzer/RESEARCH/narr/shapefiles/narr_clip')
+sfrec = sf.shapeRecord()
+points = sfrec.shape.points
+fh = Dataset('/home/sburgholzer/RESEARCH/narr/data/narr_conv_20110101_0000.nc', mode='r')
+lons = fh.variables["lons"][:]
+lats = fh.variables["lats"][:]
+fh.close()
+
+lat = lats.flatten()
+lon = lons.flatten()
+lonlat = []
+for lt,ln in zip(lat,lon):
+	lonlat.append([ln,lt])
+path = Path(points)
+clip = path.contains_points(lonlat)
+clip = clip.reshape(lats.shape)
 
 data_path = '/home/sburgholzer/RESEARCH/narr/data/'
 years = np.arange(1980,2017,1)
@@ -57,10 +77,11 @@ for yr in years:
 					stp = np.array((stp >= 1) & (cin >= -5), dtype=int)
 					count_stp = np.add(count_stp, stp == 1)
 					count_stp = ma.masked_where(count_stp == 248, count_stp)
+					count_stp = np.ma.masked_where(clip==False,count_stp)
 					fh.close()
 		if (mn < 10):
 			mn = '0%s' % str(mn)
-		gr = '/home/sburgholzer/RESEARCH/narr/data/monthly/greaterThan1/cin5/%s_%s.nc' % (str(yr), str(mn))
+		gr = '/home/sburgholzer/RESEARCH/narr/data/monthly/greaterThan1/clipped/%s_%s.nc' % (str(yr), str(mn))
 		ncfile = Dataset(gr, mode='w', format='NETCDF4')
 		ncfile.createDimension('latitude',277)
 		ncfile.createDimension('longitude',349)
