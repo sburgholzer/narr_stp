@@ -1,4 +1,4 @@
-#File:	monthlySTP.py
+#File#File:	monthlySTP.py
 #Author: Scott Burgholzer
 #Date: 12/2/2016
 #Modified: 01/26/2016
@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.ma as ma
 from mpl_toolkits.basemap import Basemap, cm
 from netCDF4 import Dataset
 import scipy.ndimage
@@ -50,13 +51,16 @@ for yr in years:
 					gr = data_path + 'narr_conv_%s.nc' % (str(yr) + '%02d' % mn + '%02d' % dy +'_'+hr)
 					fh = Dataset(gr, mode='r')
 					stp  = fh.variables["stp"][:]
+					cin = fh.variables["sbcin"][:]
 					lons  = fh.variables["lons"][:]
 					lats  = fh.variables["lats"][:]
-					count_stp = np.add(count_stp, stp>1)
+					stp = np.array((stp >= 1) & (cin >= -5), dtype=int)
+					count_stp = np.add(count_stp, stp == 1)
+					count_stp = ma.masked_where(count_stp == 248, count_stp)
 					fh.close()
 		if (mn < 10):
 			mn = '0%s' % str(mn)
-		gr = '/home/sburgholzer/RESEARCH/narr/data/monthly/greaterThan1/%s_%s.nc' % (str(yr), str(mn))
+		gr = '/home/sburgholzer/RESEARCH/narr/data/monthly/greaterThan1/cin5/%s_%s.nc' % (str(yr), str(mn))
 		ncfile = Dataset(gr, mode='w', format='NETCDF4')
 		ncfile.createDimension('latitude',277)
 		ncfile.createDimension('longitude',349)

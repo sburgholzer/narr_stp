@@ -7,7 +7,7 @@ from mpl_toolkits.basemap import Basemap, cm
 from matplotlib import cm as cm
 from matplotlib.colors import LinearSegmentedColormap
 
-ncFile = '/home/sburgholzer/RESEARCH/narr/data/climo/greaterThan1/climo.nc'
+ncFile = '/home/sburgholzer/RESEARCH/narr/data/climo/greaterThan1/testClimo.nc'
 fh = Dataset(ncFile, mode='r')
 stp = fh.variables["stphours"][:]
 lats = fh.variables["lats"][:]
@@ -29,6 +29,6 @@ new_map = matplotlib.colors.LinearSegmentedColormap.from_list('new_map', colors,
 cmap = plt.get_cmap(new_map)
 plot = m.pcolormesh(x,y,stp/35,shading='flat',cmap=cmap)
 colbar = m.colorbar(plot,"bottom",size="4%",pad="5%",extend='max')
-colbar.set_label('1980-2016 Avg. STP Hours >1',fontsize='medium',weight='bold')
+colbar.set_label('1980-2016 Avg. STP Hours >1 where cin >= -5',fontsize='medium',weight='bold')
 plt.title =('1980-2016 Avg. STP Hours')
-plt.savefig('/home/sburgholzer/public_html/stp/19802016STPgreaterThan1.png',bbox_inches='tight', dpi=200)
+plt.savefig('/home/sburgholzer/public_html/stp/testClipping.png',bbox_inches='tight', dpi=200)
